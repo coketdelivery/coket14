@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>코켓배송 걸코충 공감능력 테스트 🐾</title>
+  <style>
+    /* 기본 시스템 폰트 및 전체 배경 초기화 */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 10px;
+      color: #3b2f2f;
+      overflow: hidden;
+      background: #fff;
+    }
+    /* 인트로 스크린 배경 이미지 적용 */
+    #introScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('back.jpg') no-repeat center center;
+      background-size: cover;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      z-index: 100;
+    }
+    /* 인트로 컨텐츠 배경 흰색 박스 */
+    #introContent {
+      background: rgba(255,255,255,0.9);
+      padding: 20px 30px;
+      border-radius: 12px;
+    }
+    #introScreen h1 { font-size: 2.5rem; margin-bottom: 20px; color: #3b2f2f; }
+    #introScreen p { font-size: 1.2rem; margin: 10px 0; color: #3b2f2f; }
+    #startBtn {
+      padding: 14px 25px; font-size: 1.2rem;
+      border: none; border-radius: 25px;
+      background: #ffd54f; color: #3b2f2f;
+      cursor: pointer; transition: transform 0.1s;
+      margin-top: 20px;
+    }
+    #startBtn:hover { transform: scale(1.05); }
+
+    /* 테스트 영역 */
+    #testArea {
+      display: none;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    h1.test-title {
+      font-size: 2.2rem; text-align: center;
+      color: #d45d79;
+      margin-bottom: 20px;
+    }
+    .instructions {
+      background: #fff;
+      padding: 15px;
+      border: 2px dashed #d45d79;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    #question-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    .question-text { font-size: 1.3rem; margin-bottom: 15px; color: #5a3e3e; }
+    .options {
+      display: block; margin: 8px 0;
+      padding: 8px 12px; background: #ffeef4;
+      border-radius: 20px; cursor: pointer;
+      font-size: 1rem; transition: background 0.2s;
+    }
+    .options:hover { background: #ffd2e0; }
+    .options input[type="radio"] { accent-color: #d45d79; margin-right: 10px; transform: scale(1.2); }
+    .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+    .nav-buttons button {
+      flex: 1; padding: 14px; font-size: 1.1rem;
+      border: none; border-radius: 25px;
+      background: #d45d79; color: #fff;
+      transition: transform 0.1s;
+    }
+    .nav-buttons button:disabled { background: #f5a6bb; cursor: not-allowed; }
+    .nav-buttons button:not(:disabled):hover { transform: scale(1.05); }
+
+    #credits { display: none; text-align: center; font-size: 0.9rem; color: #3b2f2f; margin-top: 15px; }
+    #credits a { color: #d45d79; text-decoration: none; }
+
+    #result {
+      display: none;
+      background: #fff;
+      border-radius: 12px; padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      font-size: 1.3rem; color: #5a3e3e;
+      text-align: center; margin-top: 20px;
+      white-space: pre-wrap;
+    }
+    #result .cute-msg { margin: 12px 0; font-size: 1.1rem; color: #d45d79; }
+    #result .result-credit { margin-top: 20px; font-size: 0.9rem; color: #3b2f2f; }
+    #retryBtn {
+      display: none; padding: 14px 25px; font-size: 1.1rem;
+      border: none; border-radius: 30px;
+      background: linear-gradient(45deg, #ffeb3b, #ffd54f);
+      color: #3b2f2f; cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transition: transform 0.1s; margin: 20px auto 0;
+    }
+    #retryBtn:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body>
+  <div id="introScreen">
+    <div id="introContent">
+      <h1>코켓배송-공감능력 테스트</h1>
+      <p>❤️총 <span id="totalCount">0</span>문항 입니다❤️</p>
+      <p>유튜브 '결코_Gulko' 저작권 콘텐츠입니다.</p>
+      <p>© 2025 코켓게임즈. All rights reserved.<br>
+      <a href="https://www.youtube.com/@Gulko" target="_blank">https://www.youtube.com/@Gulko</a>
+     </p>
+      <button id="startBtn">테스트 시작</button>
+    </div>
+  </div>
+
+  <div id="testArea">
+    <h1 class="test-title">❤️ 공감능력 테스트 ❤️</h1>
+    <div class="instructions">1: 전혀 아니다 | 2: 아니다 | 3: 보통이다 | 4: 그렇다 | 5: 매우 그렇다</div>
+    <div id="question-box" role="region" aria-live="polite"></div>
+    <div class="nav-buttons">
+      <button id="prevBtn" disabled>← 이전</button>
+      <button id="nextBtn">다음 →</button>
+    </div>
+    <div id="credits">
+      © 2025 코켓게임즈. All rights reserved.<br>
+      유튜브 '걸코_Gulko' 저작권 콘텐츠입니다.
+      <a href="https://www.youtube.com/@Gulko" target="_blank">https://www.youtube.com/@Gulko</a>
+    </div>
+    <div id="result" role="status"></div>
+    <button id="retryBtn">다시 하기</button>
+  </div>
+
+  <script>
+    // 배경음악 & 효과음
+    const bgm = new Audio('back.mp3');
+    bgm.loop = true; bgm.volume = 0.3;
+    const clickSound = new Audio('1.mp3');
+    const resultSound = new Audio('5.mp3');
+    function playClick() { clickSound.cloneNode().play(); }
+    function playResult() { resultSound.cloneNode().play(); }
+
+    // 질문 목록
+    const questions = [ 
+      "다른 사람의 슬픔에 쉽게 공감한다.",
+      "타인의 기쁨에 함께 기뻐할 수 있다.",
+      "누군가 힘든 상황에 처하면 돕고 싶어진다.",
+      "다른 사람의 감정 변화를 빠르게 눈치챈다.",
+      "친구의 고민을 진지하게 경청한다.",
+      "상대방의 입장에서 상황을 생각하려 한다.",
+      "타인의 감정에 무심하지 않다.",
+      "슬픈 영화를 보면 눈물이 난다.",
+      "다른 사람의 고통을 보면 마음이 아프다.",
+      "힘든 상황에 처한 사람을 보면 다가간다.",
+      "감정 표현을 잘 받아들이는 편이다.",
+      "누군가 우울해 보이면 걱정된다.",
+      "타인의 작은 신호도 놓치지 않으려 한다.",
+      "상대방의 말에 공감하며 대화한다.",
+      "기쁜 소식에 진심으로 축하할 수 있다.",
+      "타인의 실패를 비웃지 않는다.",
+      "분노하는 사람을 이해하려 한다.",
+      "다른 사람의 성공을 질투하지 않는다.",
+      "상대방의 두려움을 가볍게 여기지 않는다.",
+      "타인의 상처를 존중한다.",
+      "가족이나 친구의 감정을 쉽게 알아차린다.",
+      "누군가 좌절했을 때 함께 슬퍼한다.",
+      "다른 사람의 스트레스를 진지하게 받아들인다.",
+      "어려운 상황에 놓인 사람에게 위로를 건넨다.",
+      "상대방이 힘든 이유를 이해하려 노력한다.",
+      "누군가 실수했을 때 비난하기보다 이해하려 한다.",
+      "타인의 입장을 고려해서 말한다.",
+      "감정 표현이 서툰 사람도 이해하려 한다.",
+      "슬픈 이야기를 들으면 마음이 무거워진다.",
+      "기쁨이나 슬픔을 함께 나누려 한다.",
+      "상대방의 말 속에 숨은 감정을 느낄 수 있다.",
+      "타인의 입장을 쉽게 상상할 수 있다.",
+      "분노하는 사람을 다독이려 한다.",
+      "다른 사람의 행복을 응원한다.",
+      "타인의 약점을 조롱하지 않는다.",
+      "힘들어하는 사람을 외면하지 않는다.",
+      "슬픈 뉴스를 보면 안타까운 마음이 든다.",
+      "감정이입이 자연스럽게 된다.",
+      "타인의 고통을 무시하지 않는다.",
+      "상대방의 침묵에도 귀 기울인다.",
+      "기대와 실망을 함께 느낀다.",
+      "친구가 힘들어할 때 곁에 있어주려 한다.",
+      "감정을 쉽게 읽어내는 편이다.",
+      "상대방의 마음을 상하게 하지 않으려 조심한다.",
+      "다른 사람의 이야기를 끝까지 들어준다.",
+      "타인의 감정 표현에 공감한다.",
+      "힘든 일을 겪은 사람을 가볍게 대하지 않는다.",
+      "누군가에게 진심으로 관심을 가진다.",
+      "감정적인 상황에서도 이해하려 노력한다.",
+      "상대방의 기분을 배려하려 한다."
+	];
+    document.getElementById('totalCount').textContent = questions.length;
+
+    let current = 0, answers = [];
+
+    // DOM 캐싱
+    const intro      = document.getElementById('introScreen');
+    const testArea   = document.getElementById('testArea');
+    const qBox       = document.getElementById('question-box');
+    const prevBtn    = document.getElementById('prevBtn');
+    const nextBtn    = document.getElementById('nextBtn');
+    const credits    = document.getElementById('credits');
+    const resultBox  = document.getElementById('result');
+    const retryBtn   = document.getElementById('retryBtn');
+
+    function showIntro() {
+      bgm.pause();
+      intro.style.display     = 'flex';
+      testArea.style.display  = 'none';
+    }
+
+    function startTest() {
+      // ① UI 초기화
+      document.querySelector('.test-title').style.display    = 'block';
+      document.querySelector('.instructions').style.display  = 'block';
+      qBox.style.display                                    = 'block';
+      document.querySelector('.nav-buttons').style.display   = 'flex';
+      prevBtn.style.display                                 = 'inline-block';
+      nextBtn.style.display                                 = 'inline-block';
+      credits.style.display                                 = 'block';
+      resultBox.style.display                               = 'none';
+      retryBtn.style.display                                = 'none';
+
+      // ② 상태 초기화
+      intro.style.display    = 'none';
+      testArea.style.display = 'block';
+      current = 0;
+      answers = [];
+      bgm.currentTime = 0;
+      bgm.play();
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[current];
+      let html = `<div class="question-text">${current+1}. ${q}</div>`;
+      for (let i = 1; i <= 5; i++) {
+        const checked = answers[current] === i ? 'checked' : '';
+        html += `<label class="options">
+                   <input type="radio" name="q${current}" value="${i}" ${checked}>
+                   ${i}
+                 </label>`;
+      }
+      qBox.innerHTML = html;
+      prevBtn.disabled = current === 0;
+      nextBtn.textContent = (current === questions.length-1) ? '결과 보기' : '다음 →';
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const sel = document.querySelector(`input[name="q${current}"]:checked`);
+      if (!sel) return;
+      answers[current] = +sel.value;
+      playClick();
+      if (current < questions.length-1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (current > 0) {
+        current--;
+        playClick();
+        renderQuestion();
+      }
+    });
+
+    function showResult() {
+      // 숨길 요소만 골라서 숨김
+      document.querySelector('.test-title').style.display    = 'none';
+      document.querySelector('.instructions').style.display  = 'none';
+      qBox.style.display                                    = 'none';
+      document.querySelector('.nav-buttons').style.display   = 'none';
+      credits.style.display                                 = 'none';
+
+      // 결과 계산 및 표시
+      const score = answers.reduce((a, b) => a + b, 0);
+      let msg = '';
+      if (score >= 200) {
+        msg = "당신은 매우 뛰어난 공감 능력을 가지고 있습니다!";
+      } else if (score >= 140) {
+        msg = "보통 이상의 공감 능력을 가지고 있습니다.";
+      } else {
+        msg = "공감 능력을 키우기 위해 조금 더 노력해보세요.";
+      }
+
+      resultBox.innerHTML = `
+        <div>총점: ${score}점</div>
+        <div class="cute-msg">🐰 코팡은 걸코와 함께 <a href="https://www.youtube.com/@Gulko" target="_blank">https://www.youtube.com/@Gulko</a></div>
+        <div>${msg}</div>
+        <div class="result-credit">유튜브 '걸코_Gulko' 저작권 콘텐츠입니다. <a href="https://www.youtube.com/@Gulko" target="_blank">https://www.youtube.com/@Gulko</a></div>
+      `;
+      resultBox.style.display = 'block';
+      retryBtn.style.display  = 'block';
+      playResult();
+    }
+
+    retryBtn.addEventListener('click', () => {
+      showIntro();
+    });
+
+    document.getElementById('startBtn').addEventListener('click', startTest);
+
+    // 초기 화면
+    showIntro();
+  </script>
+</body>
+</html>
